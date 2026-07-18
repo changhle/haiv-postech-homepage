@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/*
+  HAIV Lab design tokens — light theme with purple accents.
+  Base: white · Brand purples: #5a189a / #7b2cbf / #9d4edd
+  (Token names kept from the original dark theme so components stay unchanged:
+   void = page bg, ink = text, mist = muted text, neon/orchid/royal = accents.)
+*/
+@theme {
+  --color-void: #ffffff;
+  --color-deep: #f8f5fd;
+  --color-panel: #fbfafe;
+  --color-royal: #5a189a;
+  --color-neon: #9d4edd;
+  --color-orchid: #7b2cbf;
+  --color-mist: #4a4160;
+  --color-ink: #1c1229;
+  --color-bar: #8b46d6;
+}
+
+@theme inline {
+  --font-display: var(--font-sora);
+  --font-body: var(--font-manrope);
+  --font-mono: var(--font-plex-mono);
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-neon) 30%, transparent);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-orchid);
+  outline-offset: 2px;
+}
+
+/* Mono eyebrow with a short purple dash — the recurring section marker */
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-orchid);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 1.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-royal), var(--color-neon));
+  flex-shrink: 0;
+}
+
+/* Spectral hairline — signature divider */
+.hairline {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-neon) 45%, transparent) 20%,
+    color-mix(in srgb, var(--color-royal) 55%, transparent) 50%,
+    color-mix(in srgb, var(--color-neon) 45%, transparent) 80%,
+    transparent
+  );
+}
+
+/* Surface card used across pages */
+.card {
+  background: var(--color-panel);
+  border: 1px solid color-mix(in srgb, var(--color-neon) 22%, transparent);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(28, 18, 41, 0.04);
+}
+
+.card-hover {
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-hover:hover {
+  border-color: color-mix(in srgb, var(--color-neon) 55%, transparent);
+  box-shadow: 0 10px 28px rgba(123, 44, 191, 0.12);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

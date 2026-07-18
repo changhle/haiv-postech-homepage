@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MemberGroup {
+  PI
+  POSTDOC
+  PHD
+  MS
+}
+
+model Member {
+  id                 Int          @id @default(autoincrement())
+  name               String
+  role               String
+  memberGroup        MemberGroup?
+  interests          String?
+  email              String
+  homepage           String?
+  photoUrl           String?
+  graduated          Boolean      @default(false)
+  degree             String? // alumni: "Ph.D. (2025)"
+  currentAffiliation String? // alumni: where they are now
+  sortOrder          Int          @default(0)
+}
+
+enum PublicationCategory {
+  INTERNATIONAL
+  DOMESTIC
+  PATENT
+}
+
+model Publication {
+  id           Int                 @id @default(autoincrement())
+  year         Int
+  category     PublicationCategory
+  tag          String? // papers: "Journal" | "Conference" · patents: "출원" | "등록"
+  venue        String?
+  title        String
+  authors      String
+  doi          String?
+  pdfUrl       String?
+  patentNumber String?
+  patentDate   String?
+  sortOrder    Int                 @default(0)
+}
+
+enum EventCategory {
+  NEWS
+  GALLERY
+  DATES
+}
+
+model Event {
+  id       Int           @id @default(autoincrement())
+  category EventCategory
+  title    String
+  body     String?
+  imageUrl String?
+  date     DateTime
+  kind     String? // DATES: "Deadline" | "Lab Meeting" | "Seminar"
+  note     String?
+  colorA   String? // GALLERY placeholder gradient endpoints
+  colorB   String?
+}
