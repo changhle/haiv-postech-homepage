@@ -1,25 +1,15 @@
 import type { Metadata } from "next";
-import { Sora, Manrope, IBM_Plex_Mono } from "next/font/google";
+import { Noto_Serif } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { site } from "@/lib/data/site";
 
-const sora = Sora({
-  variable: "--font-sora",
+const notoSerif = Noto_Serif({
+  variable: "--font-noto-serif",
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-});
-
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: "variable",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -38,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sora.variable} ${manrope.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${notoSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Navbar />

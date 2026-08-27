@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import HeroVantaFog from "./HeroVantaFog";
 
 const links = [
   { href: "/", label: "Home" },
@@ -20,34 +22,68 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      const content = document.getElementById("home-content");
+      const threshold =
+        pathname === "/"
+          ? Math.max(0, (content?.offsetTop ?? window.innerHeight) - 64)
+          : 24;
+      setScrolled(window.scrollY >= threshold);
+    };
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    window.addEventListener("resize", onScroll, { passive: true });
 
-  useEffect(() => setOpen(false), [pathname]);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [pathname]);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const onHome = pathname === "/";
+  const showHeroSurface = !onHome || scrolled || open;
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        scrolled || open
-          ? "bg-void/85 backdrop-blur-md border-b border-neon/15"
-          : "bg-transparent border-b border-transparent"
-      }`}
-    >
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
+    <header className="fixed inset-x-0 top-0 z-50 bg-transparent">
+      <div
+        aria-hidden
+        className={`hero-nav-surface absolute inset-0 overflow-hidden transition-opacity duration-500 ${
+          showHeroSurface ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      >
+        <HeroVantaFog active />
+      </div>
+
+      <nav className="relative z-10 mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
         <Link
           href="/"
-          className="font-display text-lg font-bold tracking-tight text-ink"
+          onClick={() => setOpen(false)}
+          aria-label="HAIV Lab home"
+          className="flex items-center gap-2.5 transition-opacity hover:opacity-85"
         >
-          HAIV<span className="text-orchid">.</span>
-          <span className="ml-2 hidden font-mono text-[0.65rem] font-normal tracking-[0.25em] text-mist/70 sm:inline">
-            POSTECH
-          </span>
+          <Image
+            src="/brand/postech-emblem-white.png"
+            alt=""
+            width={48}
+            height={48}
+            loading="eager"
+            className="h-[1.9rem] w-[1.9rem]"
+          />
+          <span
+            aria-hidden
+            className="h-6 w-px bg-white/35"
+          />
+          <Image
+            src="/brand/haiv-wordmark-light-white.png"
+            alt=""
+            width={116}
+            height={40}
+            loading="eager"
+            className="h-[1.38rem] w-auto"
+          />
         </Link>
 
         <ul className="hidden items-center gap-1 md:flex">
@@ -55,17 +91,18 @@ export default function Navbar() {
             <li key={l.href}>
               <Link
                 href={l.href}
-                className={`relative rounded-md px-3 py-2 text-sm transition-colors ${
+                onClick={() => setOpen(false)}
+                className={`nav-menu-link nav-menu-link--hero relative rounded-md px-3 py-2 text-base font-semibold transition-colors ${
                   isActive(l.href)
-                    ? "text-orchid"
-                    : "text-ink/75 hover:text-ink"
+                    ? "text-white"
+                    : "text-white/75 hover:text-white"
                 }`}
               >
                 {l.label}
                 {isActive(l.href) && (
                   <motion.span
                     layoutId="nav-underline"
-                    className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-neon to-orchid"
+                    className="absolute inset-x-3 -bottom-px h-px bg-white/80"
                   />
                 )}
               </Link>
@@ -81,12 +118,12 @@ export default function Navbar() {
           className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
         >
           <span
-            className={`h-px w-5 bg-ink transition-transform ${
+            className={`h-px w-5 bg-white transition-all ${
               open ? "translate-y-[3.5px] rotate-45" : ""
             }`}
           />
           <span
-            className={`h-px w-5 bg-ink transition-transform ${
+            className={`h-px w-5 bg-white transition-all ${
               open ? "-translate-y-[3.5px] -rotate-45" : ""
             }`}
           />
@@ -100,14 +137,15 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="overflow-hidden border-t border-neon/10 px-5 md:hidden"
+            className="relative z-10 overflow-hidden border-t border-white/15 px-5 md:hidden"
           >
             {links.map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className={`block border-b border-neon/10 py-3.5 text-sm last:border-b-0 ${
-                    isActive(l.href) ? "text-orchid" : "text-ink/80"
+                  onClick={() => setOpen(false)}
+                  className={`nav-menu-link nav-menu-link--hero block border-b border-white/15 py-3.5 text-base font-semibold last:border-b-0 ${
+                    isActive(l.href) ? "text-white" : "text-white/75"
                   }`}
                 >
                   {l.label}
